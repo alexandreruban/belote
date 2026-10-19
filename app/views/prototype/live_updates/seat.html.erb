@@ -1,0 +1,63 @@
+<% variant = @state["variant"] %>
+<% turbo_refreshes_with method: :morph, scroll: :preserve if variant == "B" %>
+
+<% content_for :head do %>
+  <%# One cable connection per seat: the seat rides on the cable URL (see ApplicationCable::Connection). %>
+  <meta name="action-cable-url" content="<%= "/cable?seat=#{@seat}" %>">
+  <script>
+    // PROTOTYPE: tap every frame the server pushes to this browser, before Action Cable reads it.
+    (() => {
+      const NativeWebSocket = window.WebSocket
+      window.WebSocket = class extends NativeWebSocket {
+        constructor(...args) {
+          super(...args)
+          this.addEventListener("message", (event) => {
+            const frame = JSON.parse(event.data)
+            if (frame.message === undefined) return // pings, welcome, subscription confirmations
+            const bytes = new Blob([ event.data ]).size
+            window.dispatchEvent(new CustomEvent("prototype:wire", { detail: { bytes, frame } }))
+          })
+        }
+      }
+    })()
+  </script>
+<% end %>
+
+<% if variant == "B" %>
+  <% content_for :after_importmap do %>
+    <script type="module">
+      import { Turbo } from "@hotwired/turbo-rails"
+      Turbo.session.pageRefreshDebouncePeriod = <%= @state["refresh_debounce"].to_i %>
+    </script>
+  <% end %>
+<% end %>
+
+<div class="seat-page">
+  <header>
+    <strong><%= @seat.capitalize %></strong>
+    <span>Variant <%= variant %>: <%= Prototype::LiveUpdatesController::VARIANTS[variant] %></span>
+    <%= link_to "open alone", prototype_live_updates_seat_path(@seat), target: "_blank" %>
+  </header>
+
+  <% case variant %>
+  <% when "A" %>
+    <%= turbo_stream_from Prototype::LiveUpdates::Broadcaster::STREAM, @seat %>
+    <%= render "table", view: @view %>
+  <% when "B" %>
+    <%= turbo_stream_from Prototype::LiveUpdates::Broadcaster::STREAM %>
+    <%= render "table", view: @view %>
+  <% when "C" %>
+    <div id="table" class="table" data-controller="prototype-json-table" data-prototype-json-table-seat-value="<%= @seat %>">
+      <p class="status">connecting…</p>
+    </div>
+  <% end %>
+
+  <div id="prototype-stats" class="stats" data-turbo-permanent data-controller="prototype-stats" data-prototype-stats-seat-value="<%= @seat %>">
+    <p data-prototype-stats-target="summary"></p>
+    <button type="button" data-action="prototype-stats#dropConnection" data-prototype-stats-target="drop">Drop connection for 5s</button>
+    <details>
+      <summary>Frames this browser received over the cable</summary>
+      <ol data-prototype-stats-target="log"></ol>
+    </details>
+  </div>
+</div>

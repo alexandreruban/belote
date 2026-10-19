@@ -1,0 +1,11 @@
+<%# PROTOTYPE: floating variant switcher. Never rendered in production. %>
+<% if Rails.env.local? %>
+  <nav class="prototype-switcher" data-controller="prototype-switcher"
+       data-prototype-switcher-variants-value="<%= variants.keys.to_json %>"
+       data-prototype-switcher-current-value="<%= current %>"
+       data-action="keydown@window->prototype-switcher#key">
+    <button type="button" data-action="prototype-switcher#previous" aria-label="Previous variant">←</button>
+    <span><%= current %> (<%= variants[current] %>)</span>
+    <button type="button" data-action="prototype-switcher#next" aria-label="Next variant">→</button>
+  </nav>
+<% end %>

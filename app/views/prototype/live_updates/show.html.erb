@@ -1,0 +1,71 @@
+<div class="overview" data-controller="prototype-overview">
+  <div class="intro">
+    <h1>PROTOTYPE · Live updates without leaking hands</h1>
+    <p>
+      How do live updates reach each Player instantly without ever sending them another Player's cards?
+      Below are the four seats of one Game, each in its own iframe with its own cable connection.
+      Play a card in the highlighted hand, or press <em>Autoplay</em>.
+      Flip variants with the bar at the bottom or the ← → keys.
+    </p>
+
+    <div class="variant">
+      <% case @variant %>
+      <% when "A" %>
+        <strong>A · Turbo Streams per Player.</strong>
+        Each seat subscribes to its own signed stream (<code>turbo_stream_from :game, player</code>).
+        On every move the server renders the table four times, once per viewer, and sends each Player its own HTML.
+        <br>Classic bug: render the table once, for the Player who moved, and send it to everyone, as with one shared Game stream.
+      <% when "B" %>
+        <strong>B · Turbo page refresh.</strong>
+        All four seats subscribe to one shared Game stream that only ever carries <code>&lt;turbo-stream action="refresh"&gt;</code>.
+        Each browser then re-fetches its own page over HTTP, rendered for whoever is signed in, and morphs it in.
+        The cable never carries a card, so the bug toggle has nothing to break.
+        Turbo waits <code>pageRefreshDebouncePeriod</code> after a refresh arrives, 150 ms by default, before fetching.
+      <% when "C" %>
+        <strong>C · Custom channel + Stimulus.</strong>
+        A custom <code>Prototype::LiveUpdatesChannel</code> picks each seat's stream from the connection's identity and sends it a JSON view.
+        A Stimulus controller re-renders the table in JavaScript, a second renderer next to the ERB one. Cards are played over the socket.
+        <br>Classic bug: serialize the Game with its hands and let the browser pick out its own. The table still looks right; only the wire gives it away.
+      <% end %>
+    </div>
+
+    <p>
+      Cable adapter: <code><%= @cable["adapter"] %></code>
+      <% if @cable["polling_interval"] %>polling every <code><%= @cable["polling_interval"] %></code><% end %>
+      (run <code>bin/prototype-live-updates async</code> to compare with the in-process adapter).
+      Latency is measured from the server committing a move to each browser rendering it.
+    </p>
+
+    <div class="controls">
+      <%= button_to "Deal again", prototype_live_updates_deal_path %>
+      <%= button_to "Autoplay the rest of the Deal", prototype_live_updates_autoplay_path %>
+      <%= form_with url: prototype_live_updates_settings_path, method: :patch do |form| %>
+        <label><%= form.check_box :bug, { checked: @state["bug"] }, "1", "0" %> Classic bug</label>
+        <% if @variant == "B" %>
+          <label>Refresh debounce <%= form.select :refresh_debounce, [ [ "150 ms (Turbo default)", 150 ], [ "0 ms", 0 ] ], selected: @state["refresh_debounce"] %></label>
+        <% else %>
+          <%= form.hidden_field :refresh_debounce, value: @state["refresh_debounce"] %>
+        <% end %>
+        <%= form.submit "Apply and reload seats" %>
+      <% end %>
+    </div>
+
+    <table class="summary">
+      <thead>
+        <tr>
+          <th>Seat</th><th>updates</th><th>last ms</th><th>median ms</th><th>p95 ms</th><th>max ms</th>
+          <th>cable frames</th><th>cable KB</th><th>HTTP fetches</th><th>HTTP KB</th><th>cards from other hands</th>
+        </tr>
+      </thead>
+      <tbody data-prototype-overview-target="rows"></tbody>
+    </table>
+  </div>
+
+  <div class="seats">
+    <% %w[north east west south].each do |seat| %>
+      <iframe src="<%= prototype_live_updates_seat_path(seat) %>" title="<%= seat %>"></iframe>
+    <% end %>
+  </div>
+
+  <%= render "prototype/switcher", variants: Prototype::LiveUpdatesController::VARIANTS, current: @variant %>
+</div>

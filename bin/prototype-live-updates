@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# PROTOTYPE (throwaway): Live updates without leaking hands.
+# Usage: bin/prototype-live-updates          # Solid Cable, polling every 0.1s, as in production
+#        bin/prototype-live-updates async    # the in-process adapter, for comparison
+set -e
+cd "$(dirname "$0")/.."
+
+bin/rails db:prepare > /dev/null
+echo "Open http://localhost:3000/prototype/live_updates"
+PROTOTYPE_CABLE="${1:-solid_cable}" exec bin/rails server

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PROTOTYPE · Live updates without leaking hands</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <style>
+      :root { --ink: #1d232a; --muted: #6b7480; --line: #d9dee4; --accent: #2457c5; --bad: #c4321f; --good: #1d7a46; --felt: #eef3ef; }
+      * { box-sizing: border-box; }
+      body { margin: 0; font: 14px/1.4 system-ui, sans-serif; color: var(--ink); background: #fff; }
+      h1 { font-size: 18px; margin: 0 0 4px; }
+      p { margin: 4px 0; }
+      code { font-size: 12px; background: #f2f4f6; padding: 1px 4px; border-radius: 3px; }
+      button, select { font: inherit; }
+
+      /* Overview */
+      .overview { padding: 16px 16px 72px; }
+      .overview .intro { max-width: 1100px; }
+      .overview .variant { border-left: 3px solid var(--accent); padding: 4px 10px; margin: 8px 0; background: #f6f8fc; }
+      .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+      .controls form { display: inline-flex; gap: 6px; align-items: center; margin: 0; }
+      .summary { border-collapse: collapse; margin: 8px 0; font-variant-numeric: tabular-nums; }
+      .summary th, .summary td { border: 1px solid var(--line); padding: 3px 8px; text-align: right; }
+      .summary th:first-child, .summary td:first-child { text-align: left; }
+      .summary .bad { color: var(--bad); font-weight: 600; }
+      .summary .good { color: var(--good); }
+      .seats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+      .seats iframe { width: 100%; height: 330px; border: 1px solid var(--line); border-radius: 6px; }
+
+      /* Seat */
+      .seat-page { padding: 8px 10px; }
+      .seat-page header { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; color: var(--muted); }
+      .seat-page header strong { color: var(--ink); font-size: 15px; }
+      .table { display: grid; grid-template-areas: ". partner ." "left trick right" "hand hand hand" "status status status"; grid-template-columns: 1fr 2fr 1fr; gap: 6px; background: var(--felt); border-radius: 8px; padding: 8px; margin: 6px 0; min-height: 190px; }
+      .other { font-size: 12px; text-align: center; padding: 4px; border-radius: 6px; }
+      .other.partner { grid-area: partner; } .other.left { grid-area: left; } .other.right { grid-area: right; }
+      .other .backs { display: block; letter-spacing: -6px; font-size: 18px; color: #4a5a8a; }
+      .to-play { outline: 2px solid var(--accent); }
+      .trick { grid-area: trick; display: flex; gap: 4px; justify-content: center; align-items: center; min-height: 52px; }
+      .hand { grid-area: hand; display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; padding: 4px; border-radius: 6px; }
+      .hand form { margin: 0; }
+      .card { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; width: 38px; height: 50px; border: 1px solid #b9c0c8; border-radius: 4px; background: #fff; font-weight: 600; color: var(--ink); padding: 0; }
+      .card.red { color: #c4321f; }
+      .card small { font-size: 9px; color: var(--muted); font-weight: 400; }
+      .card.winner { box-shadow: 0 0 0 2px #e0a800; }
+      .card.playable { cursor: pointer; border-color: var(--accent); transform: translateY(-3px); }
+      .card.playable:hover { background: #eef3ff; }
+      .status { grid-area: status; text-align: center; color: var(--muted); font-size: 12px; margin: 0; }
+      .stats { font-size: 12px; font-variant-numeric: tabular-nums; }
+      .stats .bad { color: var(--bad); font-weight: 600; }
+      .stats .good { color: var(--good); }
+      .stats ol { margin: 4px 0; padding-left: 18px; max-height: 120px; overflow: auto; }
+      .stats li { word-break: break-all; color: var(--muted); }
+      .stats li .leak { color: var(--bad); font-weight: 600; }
+
+      /* Variant switcher: deliberately not part of the design */
+      .prototype-switcher { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; align-items: center; background: #111; color: #fff; padding: 6px 10px; border-radius: 999px; box-shadow: 0 4px 16px rgb(0 0 0 / .3); z-index: 10; }
+      .prototype-switcher button { background: #333; color: #fff; border: 0; border-radius: 999px; width: 28px; height: 28px; cursor: pointer; }
+    </style>
+
+    <%= javascript_importmap_tags %>
+    <%= yield :after_importmap %>
+  </head>
+
+  <body>
+    <%= yield %>
+  </body>
+</html>

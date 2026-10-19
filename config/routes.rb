@@ -9,6 +9,16 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
+  # PROTOTYPE (throwaway): Live updates without leaking hands
+  scope "prototype/live_updates", controller: "prototype/live_updates", as: :prototype_live_updates do
+    get "/", action: :show, as: ""
+    get "seats/:seat", action: :seat, as: :seat
+    post "seats/:seat/play", action: :play, as: :play
+    post "deal", action: :deal, as: :deal
+    post "autoplay", action: :autoplay, as: :autoplay
+    patch "settings", action: :settings, as: :settings
+  end
+
   # Defines the root path route ("/")
   # root "posts#index"
 end

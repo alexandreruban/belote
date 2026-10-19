@@ -1,0 +1,36 @@
+<%# PROTOTYPE: the table as one Player sees it. Renders only from Game.view_for, never from the Game itself. %>
+<% game = Prototype::LiveUpdates::Game %>
+<div id="table" class="table">
+  <% game.around(view["seat"]).each do |position, seat| %>
+    <div class="other <%= position %> <%= "to-play" if view["turn"] == seat %>">
+      <strong><%= seat.capitalize %></strong> <%= position == "partner" ? "partner" : "opponent" %>
+      <span class="backs"><%= "🂠" * view["card_counts"][seat] %></span>
+      <%= pluralize view["tricks_won"][seat], "Trick" %>
+    </div>
+  <% end %>
+
+  <div class="trick" data-prototype-public>
+    <% view["trick"].each do |play| %>
+      <span class="card <%= "red" if game.red?(play["card"]) %> <%= "winner" if view["trick_winner"] == play["seat"] %>" data-card="<%= play["card"] %>">
+        <%= game.label(play["card"]) %><small><%= play["seat"].capitalize %></small>
+      </span>
+    <% end %>
+  </div>
+
+  <div class="hand <%= "to-play" if view["turn"] == view["seat"] %>" data-hand-of="<%= view["seat"] %>">
+    <% view["hand"].each do |card| %>
+      <% if view["playable"].include?(card) %>
+        <%= button_to game.label(card), prototype_live_updates_play_path(view["seat"]), params: { card: card },
+              class: [ "card playable", ("red" if game.red?(card)) ], data: { card: card } %>
+      <% else %>
+        <span class="card <%= "red" if game.red?(card) %>" data-card="<%= card %>"><%= game.label(card) %></span>
+      <% end %>
+    <% end %>
+  </div>
+
+  <p class="status">
+    Move #<%= view["version"] %> ·
+    <% if view["turn"].nil? %>Deal over<% elsif view["turn"] == view["seat"] %>your turn<% else %><%= view["turn"].capitalize %> to play<% end %>
+  </p>
+  <span hidden data-controller="prototype-latency" data-prototype-latency-stamp-value="<%= view["stamp"] %>"></span>
+</div>
