@@ -13,7 +13,7 @@
           super(...args)
           this.addEventListener("message", (event) => {
             const frame = JSON.parse(event.data)
-            if (frame.message === undefined) return // pings, welcome, subscription confirmations
+            if (frame.type || frame.message === undefined) return // pings, welcome, subscription confirmations
             const bytes = new Blob([ event.data ]).size
             window.dispatchEvent(new CustomEvent("prototype:wire", { detail: { bytes, frame } }))
           })

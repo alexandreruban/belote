@@ -4,19 +4,24 @@ module Prototype::LiveUpdates::Store
   module_function
 
   def state
-    Rails.application.config.x.prototype_live_updates_state ||= Prototype::LiveUpdates::Game.new_state
+    bucket.state ||= Prototype::LiveUpdates::Game.new_state
   end
 
   # Applies a change and broadcasts the result under one lock, so broadcasts go out in move order.
   def update(broadcast: true)
     mutex.synchronize do
-      Rails.application.config.x.prototype_live_updates_state = yield(state)
+      bucket.state = yield(state)
       Prototype::LiveUpdates::Broadcaster.broadcast(state) if broadcast
       state
     end
   end
 
   def mutex
-    Rails.application.config.x.prototype_live_updates_mutex ||= Mutex.new
+    bucket.mutex ||= Mutex.new
+  end
+
+  # An unset config.x key reads as an empty, persistent options bucket.
+  def bucket
+    Rails.application.config.x.prototype_live_updates
   end
 end
