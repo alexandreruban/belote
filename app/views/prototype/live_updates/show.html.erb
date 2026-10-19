@@ -21,6 +21,8 @@
         Each browser then re-fetches its own page over HTTP, rendered for whoever is signed in, and morphs it in.
         The cable never carries a card, so the bug toggle has nothing to break.
         Turbo waits <code>pageRefreshDebouncePeriod</code> after a refresh arrives, 150 ms by default, before fetching.
+        <br>Catch-up: each subscription carries the version its page was rendered at, and on every (re)subscription
+        the server sends that browser a refresh if the Game has moved on. Try <em>Drop connection for 5s</em> on a seat, then play.
       <% when "C" %>
         <strong>C · Custom channel + Stimulus.</strong>
         A custom <code>Prototype::LiveUpdatesChannel</code> picks each seat's stream from the connection's identity and sends it a JSON view.

@@ -44,7 +44,8 @@
     <%= turbo_stream_from Prototype::LiveUpdates::Broadcaster::STREAM, @seat %>
     <%= render "table", view: @view %>
   <% when "B" %>
-    <%= turbo_stream_from Prototype::LiveUpdates::Broadcaster::STREAM %>
+    <%= turbo_stream_from Prototype::LiveUpdates::Broadcaster::STREAM,
+          channel: Prototype::GameStreamChannel, data: { version: @view["version"] } %>
     <%= render "table", view: @view %>
   <% when "C" %>
     <div id="table" class="table" data-controller="prototype-json-table" data-prototype-json-table-seat-value="<%= @seat %>">
