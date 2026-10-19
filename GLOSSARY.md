@@ -10,10 +10,14 @@ _Avoid_: Account, member
 
 **Player**:
 A User seated in a particular Game.
-_Avoid_: Seat, participant
+_Avoid_: Participant
+
+**Seat**:
+One of the four places at a Game's table, in clockwise order. Each is occupied by one Player.
+_Avoid_: Position, place
 
 **Team**:
-The two Players seated opposite each other in a Game, who score together.
+The two Players in opposite Seats of a Game, who score together.
 _Avoid_: Partnership, side
 
 ## Getting a game going
@@ -64,3 +68,33 @@ _Avoid_: Attackers
 **Defending Team**:
 The Team opposing the Taking Team for that Deal.
 _Avoid_: Defenders' side
+
+## Scoring
+
+**Contract**:
+The Taking Team's obligation to finish the Deal ahead of the Defending Team.
+
+**Dedans**:
+The Taking Team failing its Contract.
+_Avoid_: Chute, going set
+
+**Capot**:
+One Team winning all eight Tricks of a Deal.
+_Avoid_: Slam, vole
+
+**Dix de der**:
+The bonus for winning the last Trick of a Deal.
+_Avoid_: Last-trick bonus
+
+**Belote**:
+One Player holding both the King and the Queen of Trump in a Deal. "Rebelote" is the call made when the second of the two is played.
+
+**Card points**:
+The value of the cards a Team has won in its Tricks during a Deal.
+
+**Deal points**:
+A Team's Card points plus its Dix de der and Belote for one Deal; the two Teams' Deal points are compared to settle the Contract.
+_Avoid_: Total, trick points
+
+**Score**:
+A Team's running total over the Game.
