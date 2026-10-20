@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="<%= @lang %>">
+  <head>
+    <title>PROTOTYPE · Lobby and table screens</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; font: 15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+      button, select, input { font: inherit; }
+
+      /* Variant switcher: deliberately not part of the design. Variants keep 64px free at the bottom. */
+      .prototype-switcher { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; align-items: center; max-width: calc(100vw - 16px); background: #111; color: #fff; padding: 6px 10px; border-radius: 999px; box-shadow: 0 4px 16px rgb(0 0 0 / .35); z-index: 1000; font: 13px/1.2 ui-monospace, Menlo, monospace; }
+      .prototype-switcher button { background: #333; color: #fff; border: 0; border-radius: 999px; width: 28px; height: 28px; cursor: pointer; }
+      .prototype-switcher select { background: #333; color: #fff; border: 0; border-radius: 999px; padding: 4px 8px; font: inherit; max-width: 230px; }
+      .prototype-switcher a { color: #fff; }
+      .prototype-switcher .lang a { padding: 2px 6px; border-radius: 999px; text-decoration: none; opacity: .55; }
+      .prototype-switcher .lang a[aria-current] { background: #fff; color: #111; opacity: 1; }
+      .prototype-switcher details { position: relative; }
+      .prototype-switcher summary { cursor: pointer; list-style: none; opacity: .7; }
+      .prototype-switcher details pre { position: absolute; bottom: 34px; right: 0; width: min(420px, 90vw); max-height: 60vh; overflow: auto; margin: 0; padding: 10px; background: #111; border-radius: 8px; font-size: 11px; white-space: pre-wrap; }
+    </style>
+
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <%= yield %>
+  </body>
+</html>

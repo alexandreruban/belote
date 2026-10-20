@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# PROTOTYPE (throwaway): Lobby and table screens.
+# Usage: bin/prototype-screens
+set -e
+cd "$(dirname "$0")/.."
+
+bin/rails db:prepare > /dev/null
+echo "Open http://localhost:3000/prototype/screens"
+exec bin/rails server

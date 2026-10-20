@@ -1,0 +1,16 @@
+<%= render "prototype/screens/variant_#{@variant.downcase}/screen", scene: @scene %>
+
+<% content_for :prototype_switcher do %>
+  <span class="lang">
+    <% %w[ fr en ].each do |lang| %>
+      <%= link_to lang.upcase, prototype_screens_path(variant: @variant, scenario: @scenario, lang:), "aria-current": (lang == @lang || nil), data: { turbo_action: "replace" } %>
+    <% end %>
+  </span>
+  <details>
+    <summary>state</summary>
+    <pre><%= JSON.pretty_generate(@scene.to_h) %></pre>
+  </details>
+<% end %>
+
+<%= render "prototype/switcher", variants: Prototype::ScreensController::VARIANTS, current: @variant,
+      scenarios: Prototype::Screens::Scene::SCENARIOS, scenario: @scenario %>
