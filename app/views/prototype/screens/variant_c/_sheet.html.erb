@@ -1,0 +1,40 @@
+<%# Choosing Trump: a bottom sheet over the lower half of the table, the hand still peeking above it. %>
+<section class="c-sheet<%= " c-sheet-mine" if scene.my_turn? %>" aria-label="<%= tr(:trump) %>">
+  <span class="c-grab"></span>
+  <div class="c-sheet-head">
+    <span class="c-round"><%= tr(scene.trump_round == 1 ? :round_1 : :round_2) %></span>
+    <span><%= tr(:deal, number: scene.deal_number) %></span>
+  </div>
+
+  <div class="c-sheet-body">
+    <figure class="c-turned">
+      <%= render "prototype/screens/variant_c/card", card: scene.turned_card, size: :xl %>
+      <figcaption><%= tr(:turned_card) %></figcaption>
+    </figure>
+    <div class="c-sheet-side">
+      <% if scene.my_turn? %>
+        <h2><%= tr(:your_turn_speak) %></h2>
+      <% else %>
+        <h2 class="c-dots"><%= tr(:turn_of, name: player_name(scene.to_act)) %></h2>
+      <% end %>
+      <% if scene.spoken.any? %>
+        <ul class="c-passes">
+          <% scene.spoken.each do |position, _| %>
+            <li><%= player_name(position) %> · <%= tr(:passed) %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </div>
+
+  <% if scene.my_turn? %>
+    <div class="c-choices c-choices-<%= scene.trump_round %>">
+      <% scene.trump_choices.each do |suit| %>
+        <%= link_to action_path(:take), class: "c-btn c-btn-primary#{" c-red-suit" if suit.in?(%i[ hearts diamonds ])}" do %>
+          <b><%= suit_symbol(suit) %></b> <%= tr(:take_suit, suit: suit_name(suit)) %>
+        <% end %>
+      <% end %>
+      <%= link_to tr(:pass), action_path(:pass), class: "c-btn c-btn-ghost" %>
+    </div>
+  <% end %>
+</section>

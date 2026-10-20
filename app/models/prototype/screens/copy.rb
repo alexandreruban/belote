@@ -3,6 +3,18 @@
 module Prototype::Screens::Copy
   STRINGS = {
     "fr" => {
+      b_players: "Joueurs",
+      b_play_order: "Ordre de jeu, sens horaire",
+      b_partner: "Partenaire",
+      b_opponent: "Adversaire",
+      b_score_sheet: "Feuille de marque",
+      b_deal_column: "Donne",
+      b_hand: "Votre main",
+      b_winning_by: "%{name} est maître",
+      b_trick_won: "Pli %{number} remporté par %{name}",
+      b_waiting_list: "Joueurs en attente",
+      b_you_winning: "Vous êtes maître",
+      b_all_passed: "1er tour : tout le monde a passé.",
       sign_out: "Se déconnecter",
       signed_in_as: "Connecté : %{name}",
       lobby: "Salon",
@@ -60,6 +72,18 @@ module Prototype::Screens::Copy
       total: "Total"
     },
     "en" => {
+      b_players: "Players",
+      b_play_order: "Play order, clockwise",
+      b_partner: "Partner",
+      b_opponent: "Opponent",
+      b_score_sheet: "Score sheet",
+      b_deal_column: "Deal",
+      b_hand: "Your hand",
+      b_winning_by: "%{name} is winning",
+      b_trick_won: "Trick %{number} won by %{name}",
+      b_waiting_list: "Players waiting",
+      b_you_winning: "You're winning",
+      b_all_passed: "1st round: everyone passed.",
       sign_out: "Sign out",
       signed_in_as: "Signed in as %{name}",
       lobby: "Lobby",

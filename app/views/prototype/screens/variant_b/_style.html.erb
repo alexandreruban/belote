@@ -1,0 +1,160 @@
+<style>
+  .variant-b {
+    --ink: #1c2330; --muted: #667085; --line: #e3e6eb; --page: #f6f7f9; --panel: #fff;
+    --accent: #2457c5; --accent-soft: #eef3fd; --us: #2457c5; --them: #b4530f;
+    --red: #c62828; --gold: #e0a800; --gold-soft: #fff8e1;
+    min-height: 100vh; padding-bottom: 80px; background: var(--page); color: var(--ink);
+  }
+  .variant-b h1, .variant-b h2, .variant-b h3, .variant-b p { margin: 0; }
+  .variant-b ol { list-style: none; margin: 0; padding: 0; }
+  .variant-b .b-red { color: var(--red); }
+  .variant-b .b-team-us { --team: var(--us); }
+  .variant-b .b-team-them { --team: var(--them); }
+  .variant-b span.b-team-us, .variant-b span.b-team-them { color: var(--team); font-weight: 600; }
+
+  /* Nav */
+  .variant-b .b-nav { display: flex; justify-content: space-between; align-items: center; height: 56px; padding: 0 24px; background: var(--panel); border-bottom: 1px solid var(--line); }
+  .variant-b .b-brand { font-weight: 700; font-size: 17px; letter-spacing: .01em; }
+  .variant-b .b-user { display: flex; gap: 12px; align-items: center; color: var(--muted); font-size: 14px; }
+
+  /* Buttons and tags */
+  .variant-b .b-btn { display: inline-flex; gap: 6px; align-items: center; padding: 9px 16px; border-radius: 8px; font-weight: 600; text-decoration: none; border: 1px solid transparent; cursor: pointer; }
+  .variant-b .b-btn-primary { background: var(--accent); color: #fff; }
+  .variant-b .b-btn-primary:hover { background: #1b47a6; }
+  .variant-b .b-btn-primary .b-btn-suit { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 4px; background: #fff; color: var(--ink); }
+  .variant-b .b-btn-primary .b-btn-suit.b-red { color: var(--red); }
+  .variant-b .b-btn-secondary { background: var(--panel); color: var(--ink); border-color: #c9ced6; }
+  .variant-b .b-btn-secondary:hover { background: #f0f2f5; }
+  .variant-b .b-btn-quiet { background: none; color: var(--ink); border-color: var(--line); padding: 5px 10px; font-size: 13px; }
+  .variant-b .b-tag { display: inline-block; padding: 1px 7px; border-radius: 999px; background: #e8ebef; color: var(--ink); font-size: 11px; font-weight: 600; white-space: nowrap; vertical-align: 1px; }
+  .variant-b .b-tag-trump { background: var(--ink); color: #fff; }
+  .variant-b .b-tag-winning { background: var(--gold); color: #3b2c00; }
+  .variant-b .b-tag-announce { background: #fde68a; color: #3b2c00; }
+  .variant-b .b-tag-made { background: #e3f4ea; color: #1d7a46; }
+  .variant-b .b-tag-dedans { background: #fde8e6; color: #b42318; }
+  .variant-b .b-caption { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+
+  /* Panels */
+  .variant-b .b-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; }
+  .variant-b .b-panel h2 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 12px; }
+  .variant-b .b-panel h2 small { font-weight: 500; text-transform: none; letter-spacing: 0; margin-left: 6px; }
+
+  /* Cards */
+  .variant-b .b-card { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: #fff; border: 1px solid #c9ced6; border-radius: 6px; font-weight: 700; color: var(--ink); line-height: 1; }
+  .variant-b .b-card.b-red { color: var(--red); }
+  .variant-b .b-card-hand { width: 52px; height: 72px; font-size: 18px; }
+  .variant-b .b-card-hand .b-suit { font-size: 22px; }
+  .variant-b .b-card-trick { width: 64px; height: 88px; font-size: 22px; }
+  .variant-b .b-card-trick .b-suit { font-size: 28px; }
+  .variant-b .b-card-small { width: 34px; height: 46px; font-size: 13px; border-radius: 4px; }
+  .variant-b .b-card-small .b-suit { font-size: 15px; }
+  .variant-b .b-card-empty { border: 2px dashed #d5d9df; background: transparent; color: var(--accent); }
+
+  /* Lobby */
+  .variant-b .b-lobby { display: grid; place-items: start center; padding: 56px 16px; }
+  .variant-b .b-lobby .b-panel { width: min(440px, 100%); padding: 24px; display: grid; gap: 14px; }
+  .variant-b .b-lobby h1 { font-size: 24px; }
+  .variant-b .b-lobby-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .variant-b .b-lobby-head h2 { margin: 0; }
+  .variant-b .b-count { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .variant-b .b-waiting { counter-reset: waiting; border-top: 1px solid var(--line); }
+  .variant-b .b-waiting li { counter-increment: waiting; display: flex; gap: 8px; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--line); font-weight: 600; }
+  .variant-b .b-waiting li::before { content: counter(waiting) "."; width: 18px; color: var(--muted); font-weight: 400; }
+  .variant-b .b-waiting li.b-me { color: var(--accent); }
+  .variant-b .b-waiting li.b-empty { color: #b7bdc6; font-weight: 400; }
+  .variant-b .b-missing { font-weight: 600; }
+  .variant-b .b-rule { color: var(--muted); font-size: 14px; }
+  .variant-b .b-lobby .b-btn { justify-self: start; }
+
+  /* Board layout */
+  .variant-b .b-board { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; max-width: 1240px; margin: 0 auto; padding: 24px; align-items: start; }
+  .variant-b .b-main, .variant-b .b-side { display: grid; gap: 16px; min-width: 0; }
+
+  /* Deal result and status */
+  .variant-b .b-result { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 12px 16px; border-radius: 10px; background: var(--gold-soft); border: 1px solid #f3d27a; }
+  .variant-b .b-result-points { display: flex; gap: 12px; margin-left: auto; font-variant-numeric: tabular-nums; }
+  .variant-b .b-status { padding: 16px 20px; border-radius: 10px; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid #c9ced6; display: grid; gap: 4px; }
+  .variant-b .b-status h1 { font-size: 24px; font-weight: 700; }
+  .variant-b .b-status p { color: var(--muted); font-size: 16px; }
+  .variant-b .b-status-mine { border-left-color: var(--accent); background: var(--accent-soft); }
+  .variant-b .b-status-mine p { color: var(--ink); }
+  .variant-b .b-status .b-announce { color: var(--ink); }
+  .variant-b .b-announce strong { display: inline-block; padding: 2px 10px; border-radius: 999px; background: #fde68a; margin-right: 4px; }
+
+  /* Trump choosing */
+  .variant-b .b-trump { display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: start; }
+  .variant-b .b-trump-turned { display: grid; gap: 8px; justify-items: center; }
+  .variant-b .b-label { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .variant-b .b-trump-round h2 { margin-bottom: 6px; }
+  .variant-b .b-spoken { display: grid; gap: 4px; margin: 6px 0 16px; max-width: 360px; }
+  .variant-b .b-spoken li { display: flex; justify-content: space-between; padding: 6px 10px; border-left: 3px solid var(--team); background: #fafbfc; border-radius: 0 6px 6px 0; }
+  .variant-b .b-spoken li.b-acting { background: var(--accent-soft); font-weight: 700; }
+  .variant-b .b-spoken-what { color: var(--muted); }
+  .variant-b .b-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  /* Trick */
+  .variant-b .b-trick { display: flex; gap: 14px; flex-wrap: wrap; }
+  .variant-b .b-slot { display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 6px; width: 84px; }
+  .variant-b .b-flags { min-height: 18px; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .variant-b .b-slot-name { font-size: 13px; font-weight: 600; color: var(--team); }
+  .variant-b .b-slot-winning .b-card { box-shadow: 0 0 0 3px var(--gold); }
+  .variant-b .b-slot-next .b-card-empty { border-color: var(--accent); background: var(--accent-soft); }
+  .variant-b .b-last { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); }
+  .variant-b .b-last h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+  .variant-b .b-last ol { display: flex; flex-wrap: wrap; gap: 10px; }
+  .variant-b .b-last li { display: flex; align-items: center; gap: 4px; font-size: 12px; opacity: .8; }
+  .variant-b .b-last li.b-last-winner { opacity: 1; color: var(--ink); font-weight: 600; }
+  .variant-b .b-last li.b-last-winner .b-card { box-shadow: 0 0 0 2px var(--gold); }
+  .variant-b .b-last-won { font-size: 13px; }
+
+  /* Hand */
+  .variant-b .b-hand-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .variant-b .b-must { font-weight: 600; color: var(--accent); font-size: 14px; }
+  .variant-b .b-suit-row { display: grid; grid-template-columns: 150px 1fr; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); }
+  .variant-b .b-suit-label { display: flex; gap: 6px; align-items: center; font-weight: 600; }
+  .variant-b .b-suit-label > span:first-child { font-size: 20px; width: 20px; }
+  .variant-b .b-suit-name::first-letter { text-transform: uppercase; }
+  .variant-b .b-suit-cards { display: flex; flex-wrap: wrap; gap: 8px; }
+  .variant-b .b-play { text-decoration: none; }
+  .variant-b .b-play .b-card { border: 2px solid var(--accent); transform: translateY(-4px); box-shadow: 0 4px 10px rgb(36 87 197 / .2); transition: transform .1s; }
+  .variant-b .b-play:hover .b-card { background: var(--accent-soft); transform: translateY(-7px); }
+  .variant-b .b-illegal { cursor: not-allowed; }
+  .variant-b .b-illegal .b-card { opacity: .35; background: #f0f1f3; filter: grayscale(1); }
+
+  /* Sidebar */
+  .variant-b .b-team { display: grid; gap: 6px; }
+  .variant-b .b-team + .b-team { margin-top: 12px; }
+  .variant-b .b-team-head { display: flex; align-items: baseline; gap: 8px; }
+  .variant-b .b-team-head strong { color: var(--team); }
+  .variant-b .b-team-names { color: var(--muted); font-size: 13px; }
+  .variant-b .b-team-score { margin-left: auto; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .variant-b .b-bar { height: 8px; border-radius: 999px; background: #e8ebef; overflow: hidden; }
+  .variant-b .b-bar span { display: block; height: 100%; background: var(--team); }
+  .variant-b .b-facts { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; font-size: 14px; }
+  .variant-b .b-facts dt { color: var(--muted); }
+  .variant-b .b-facts dd { margin: 0; }
+  .variant-b .b-players { counter-reset: seat; display: grid; gap: 6px; }
+  .variant-b .b-players li { counter-increment: seat; display: grid; grid-template-columns: 22px 1fr auto; grid-template-areas: "n name chips" "n role chips"; column-gap: 8px; padding: 8px 10px; border-left: 4px solid var(--team); background: #fafbfc; border-radius: 0 8px 8px 0; }
+  .variant-b .b-players li::before { content: counter(seat); grid-area: n; align-self: center; color: var(--muted); font-weight: 700; }
+  .variant-b .b-players li.b-acting { background: var(--accent-soft); outline: 2px solid var(--accent); outline-offset: -2px; }
+  .variant-b .b-player-name { grid-area: name; font-weight: 700; }
+  .variant-b .b-player-role { grid-area: role; color: var(--muted); font-size: 13px; }
+  .variant-b .b-player-chips { grid-area: chips; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+  .variant-b .b-player-cards { color: var(--muted); font-size: 12px; }
+  .variant-b .b-sheet { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .variant-b .b-sheet th, .variant-b .b-sheet td { padding: 6px 4px; border-bottom: 1px solid var(--line); text-align: left; }
+  .variant-b .b-sheet th:nth-child(n+3), .variant-b .b-sheet td:nth-child(n+3) { text-align: right; }
+  .variant-b .b-sheet thead th { color: var(--muted); font-weight: 600; }
+  .variant-b .b-sheet tfoot th { border-bottom: 0; font-size: 14px; }
+  .variant-b .b-sheet .b-newest td { background: var(--gold-soft); font-weight: 600; }
+  .variant-b .b-sheet .b-dropped td, .variant-b .b-sheet .b-current td { color: var(--muted); font-style: italic; }
+
+  @media (max-width: 860px) {
+    .variant-b .b-board { grid-template-columns: minmax(0, 1fr); padding: 16px; }
+    .variant-b .b-nav { padding: 0 16px; }
+    .variant-b .b-trump { grid-template-columns: 1fr; justify-items: start; }
+    .variant-b .b-suit-row { grid-template-columns: 1fr; gap: 8px; }
+    .variant-b .b-trick { gap: 6px; }
+    .variant-b .b-slot { width: 72px; }
+  }
+</style>

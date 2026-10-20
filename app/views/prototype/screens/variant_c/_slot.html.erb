@@ -1,0 +1,23 @@
+<%# What a position has put down: its card of the current Trick (or "Passe" while choosing Trump), and its card of the last Trick, shown instead when the last-Trick chip is on. %>
+<% card = scene.played_by(position) %>
+<% last_card = last && last[:cards].to_h[position] %>
+<% call = scene.announcement if scene.announcement&.dig(:position) == position %>
+<div class="c-slot c-slot-current">
+  <% if scene.choosing_trump? %>
+    <% if scene.spoken[position] == :pass %><span class="c-said"><%= tr(:passed) %></span><% end %>
+  <% elsif card %>
+    <span class="c-played">
+      <% if call %><span class="c-bubble"><%= tr(call[:call]) %></span><% end %>
+      <%= render "prototype/screens/variant_c/card", card:, size:, winning: scene.winning == position, trump: card.suit == scene.trump %>
+    </span>
+  <% elsif scene.playing? %>
+    <span class="c-empty-slot c-<%= size %>"></span>
+  <% end %>
+</div>
+<% if last_card %>
+  <div class="c-slot c-slot-last">
+    <%= render "prototype/screens/variant_c/card", card: last_card, size:, winning: last[:winner] == position, ghost: true %>
+  </div>
+<% elsif last %>
+  <div class="c-slot c-slot-last"></div>
+<% end %>

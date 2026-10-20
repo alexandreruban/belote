@@ -1,0 +1,32 @@
+<% me = scene.username(:me) %>
+<header class="c-header">
+  <span class="c-brand">♠♥ Belote</span>
+  <%= render "prototype/screens/variant_c/user", scene: %>
+</header>
+
+<section class="c-lobby<%= " c-joined" if scene.joined? %>">
+  <h1><%= tr(:lobby) %></h1>
+  <div class="c-counter"><%= tr(:lobby_count, count: scene.waiting.size) %></div>
+
+  <p class="c-label"><%= scene.waiting.any? ? tr(:lobby_waiting) : tr(:lobby_nobody) %></p>
+  <ul class="c-lobby-seats">
+    <% 4.times do |index| %>
+      <% name = scene.waiting[index] %>
+      <li class="<%= name ? "c-filled" : "c-open" %><%= " c-me" if name == me %>">
+        <span class="c-avatar"><%= name&.first&.upcase %></span>
+        <span class="c-name"><%= name == me ? tr(:you_cap) : name %></span>
+      </li>
+    <% end %>
+  </ul>
+
+  <p class="c-missing"><%= tr(:lobby_missing, count: scene.missing) %></p>
+  <p class="c-rule"><%= tr(:lobby_rule) %></p>
+</section>
+
+<div class="c-sticky">
+  <% if scene.joined? %>
+    <%= link_to tr(:lobby_leave), action_path(:leave), class: "c-btn c-btn-ghost c-btn-block" %>
+  <% else %>
+    <%= link_to tr(:lobby_join), action_path(:join), class: "c-btn c-btn-primary c-btn-block" %>
+  <% end %>
+</div>

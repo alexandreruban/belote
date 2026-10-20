@@ -1,0 +1,163 @@
+<%
+  positions = Prototype::Screens::Scene::POSITIONS
+  active = scene.playing? && scene.my_turn?
+
+  if scene.choosing_trump?
+    title = scene.my_turn? ? tr(:your_turn_speak) : tr(:turn_of, name: scene.username(scene.to_act))
+    subline = "#{tr(:"round_#{scene.trump_round}")} · #{tr(:turned_card)} #{card_text(scene.turned_card)}"
+  elsif scene.my_turn?
+    title, subline = tr(:your_turn), must_text
+  else
+    title = tr(:turn_of, name: scene.username(scene.to_act))
+    subline =
+      if scene.winning == :me then tr(:b_you_winning)
+      elsif scene.winning then tr(:b_winning_by, name: scene.username(scene.winning))
+      elsif scene.last_trick then tr(:b_trick_won, number: scene.trick_number - 1, name: player_name(scene.last_trick[:winner]))
+      end
+  end
+%>
+<main class="b-board">
+  <div class="b-main">
+    <% if (deal = scene.previous_deal) %>
+      <section class="b-result">
+        <strong><%= tr(:deal, number: deal[:number]) %></strong>
+        <span><%= tr(:deal_result, name: scene.username(deal[:taker]), suit: suit_name(deal[:trump])) %></span>
+        <span class="b-tag b-tag-<%= deal[:result] %>"><%= tr(deal[:result]) %></span>
+        <span class="b-result-points">
+          <span class="b-team-us"><%= tr(:us) %> +<%= deal[:us] %></span>
+          <span class="b-team-them"><%= tr(:them) %> +<%= deal[:them] %></span>
+        </span>
+      </section>
+    <% end %>
+
+    <section class="b-status <%= "b-status-mine" if scene.my_turn? %>">
+      <h1><%= title %></h1>
+      <% if subline %><p><%= subline %></p><% end %>
+      <% if (call = scene.announcement) %>
+        <p class="b-announce"><strong><%= tr(call[:call]) %></strong> <%= player_name(call[:position]) %></p>
+      <% end %>
+    </section>
+
+    <% if scene.choosing_trump? %>
+      <% speaking = positions.rotate(positions.index(scene.dealer) + 1) %>
+      <section class="b-panel b-trump">
+        <div class="b-trump-turned">
+          <span class="b-label"><%= tr(:turned_card) %></span>
+          <%= render "prototype/screens/variant_b/card", card: scene.turned_card, size: :trick %>
+        </div>
+
+        <div class="b-trump-round">
+          <h2><%= tr(:"round_#{scene.trump_round}") %></h2>
+          <% if scene.trump_round == 2 %><p class="b-caption"><%= tr(:b_all_passed) %></p><% end %>
+
+          <ol class="b-spoken">
+            <% speaking.each do |position| %>
+              <li class="b-team-<%= scene.team(position) %> <%= "b-acting" if position == scene.to_act %>">
+                <span class="b-spoken-name">
+                  <%= player_name(position) %>
+                  <% if position == scene.dealer %><span class="b-tag"><%= tr(:dealer) %></span><% end %>
+                </span>
+                <span class="b-spoken-what">
+                  <% if scene.spoken[position] == :pass %>
+                    <%= tr(:passed) %>
+                  <% elsif position == scene.to_act %>
+                    …
+                  <% else %>
+                    —
+                  <% end %>
+                </span>
+              </li>
+            <% end %>
+          </ol>
+
+          <% if scene.my_turn? %>
+            <div class="b-actions">
+              <% scene.trump_choices.each do |suit| %>
+                <%= link_to action_path(:take), class: "b-btn b-btn-primary" do %>
+                  <%= tr(:take_suit, suit: suit_name(suit)) %>
+                  <span class="b-btn-suit <%= "b-red" if suit.in?(%i[ hearts diamonds ]) %>"><%= suit_symbol(suit) %></span>
+                <% end %>
+              <% end %>
+              <%= link_to tr(:pass), action_path(:pass), class: "b-btn b-btn-secondary" %>
+            </div>
+          <% end %>
+        </div>
+      </section>
+    <% else %>
+      <% leader = scene.trick.first&.first || scene.to_act %>
+      <section class="b-panel">
+        <h2><%= tr(:trick, number: scene.trick_number) %></h2>
+        <ol class="b-trick">
+          <% positions.rotate(positions.index(leader)).each_with_index do |position, index| %>
+            <% card = scene.played_by(position) %>
+            <li class="b-slot b-team-<%= scene.team(position) %> <%= "b-slot-next" if position == scene.to_act %> <%= "b-slot-winning" if position == scene.winning %>">
+              <span class="b-flags">
+                <% if index.zero? %><span class="b-tag"><%= tr(:leads) %></span><% end %>
+              </span>
+              <% if card %>
+                <%= render "prototype/screens/variant_b/card", card:, size: :trick %>
+              <% else %>
+                <span class="b-card b-card-trick b-card-empty"><%= "…" if position == scene.to_act %></span>
+              <% end %>
+              <span class="b-slot-name"><%= player_name(position) %></span>
+              <span class="b-flags">
+                <% if position == scene.winning %><span class="b-tag b-tag-winning"><%= tr(:winning) %></span><% end %>
+                <% if (call = scene.announcement) && call[:position] == position && call[:card] == card %>
+                  <span class="b-tag b-tag-announce"><%= tr(call[:call]) %></span>
+                <% end %>
+              </span>
+            </li>
+          <% end %>
+        </ol>
+
+        <div class="b-last">
+          <h3><%= tr(:last_trick) %></h3>
+          <% if (last = scene.last_trick) %>
+            <ol>
+              <% last[:cards].each do |position, card| %>
+                <li class="b-team-<%= scene.team(position) %> <%= "b-last-winner" if position == last[:winner] %>">
+                  <%= render "prototype/screens/variant_b/card", card:, size: :small %>
+                  <span><%= player_name(position) %></span>
+                </li>
+              <% end %>
+            </ol>
+            <span class="b-last-won"><%= tr(:won_by, name: player_name(last[:winner])) %></span>
+          <% else %>
+            <span class="b-last-won"><%= tr(:no_last_trick) %></span>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+
+    <section class="b-panel b-hand <%= "b-hand-active" if active %>">
+      <div class="b-hand-head">
+        <h2><%= tr(:b_hand) %></h2>
+        <% if active %><span class="b-must"><%= must_text %></span><% end %>
+      </div>
+      <% scene.hand_by_suit.each do |suit, cards| %>
+        <div class="b-suit-row">
+          <span class="b-suit-label">
+            <span class="<%= "b-red" if suit.in?(%i[ hearts diamonds ]) %>"><%= suit_symbol(suit) %></span>
+            <span class="b-suit-name"><%= suit_name(suit) %></span>
+            <% if suit == scene.trump %><span class="b-tag b-tag-trump"><%= tr(:trump) %></span><% end %>
+          </span>
+          <span class="b-suit-cards">
+            <% cards.each do |card| %>
+              <% if scene.playable?(card) %>
+                <%= link_to action_path(:play), class: "b-play", title: tr(:play_card, card: card_text(card)) do %>
+                  <%= render "prototype/screens/variant_b/card", card:, size: :hand %>
+                <% end %>
+              <% elsif active %>
+                <span class="b-illegal" title="<%= tr(:illegal) %>"><%= render "prototype/screens/variant_b/card", card:, size: :hand %></span>
+              <% else %>
+                <span class="b-idle"><%= render "prototype/screens/variant_b/card", card:, size: :hand %></span>
+              <% end %>
+            <% end %>
+          </span>
+        </div>
+      <% end %>
+    </section>
+  </div>
+
+  <%= render "prototype/screens/variant_b/sidebar", scene: %>
+</main>

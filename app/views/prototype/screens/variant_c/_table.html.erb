@@ -1,0 +1,102 @@
+<% last = scene.last_trick %>
+<% my_play = scene.playing? && scene.my_turn? %>
+
+<%= render "prototype/screens/variant_c/header", scene: %>
+
+<% if (deal = scene.previous_deal) %>
+  <section class="c-deal-card">
+    <label class="c-close" aria-label="×"><input type="checkbox" id="c-deal-dismiss" hidden>×</label>
+    <div>
+      <strong><%= tr(:deal, number: deal[:number]) %></strong> ·
+      <% if deal[:result] == :dropped %>
+        <%= tr(:dropped) %>
+      <% else %>
+        <%= tr(:deal_result, name: scene.username(deal[:taker]), suit: suit_name(deal[:trump])) %> · <%= tr(deal[:result]) %>
+      <% end %>
+    </div>
+    <div class="c-deltas">
+      <span class="c-us-text"><%= tr(:us) %> +<%= deal[:us] %></span>
+      <span class="c-them-text"><%= tr(:them) %> +<%= deal[:them] %></span>
+    </div>
+  </section>
+<% end %>
+
+<section class="c-arc">
+  <% %i[ left partner right ].each do |position| %>
+    <%= render "prototype/screens/variant_c/seat", scene:, position:, last: %>
+  <% end %>
+</section>
+
+<section class="c-middle">
+  <div class="c-last">
+    <% if last %>
+      <%# Right after a Trick is won, nothing of the next one is down yet: keep the won Trick showing until the first card is played. %>
+      <label class="c-last-chip"><input type="checkbox" id="c-last"<%= " checked" if scene.playing? && scene.trick.empty? %>>↺ <%= tr(:last_trick) %></label>
+      <span class="c-last-caption"><%= tr(:won_by, name: player_name(last[:winner])) %></span>
+    <% else %>
+      <span class="c-last-chip c-disabled" title="<%= tr(:no_last_trick) %>">↺ <%= tr(:last_trick) %></span>
+    <% end %>
+  </div>
+
+  <div class="c-mine<%= " c-to-act" if scene.my_turn? %>">
+    <%= render "prototype/screens/variant_c/slot", scene:, position: :me, last:, size: :md %>
+  </div>
+
+  <div class="c-trick-info">
+    <span><%= tr(:deal, number: scene.deal_number) %></span>
+    <% if scene.trick_number %><span><%= tr(:trick, number: scene.trick_number) %></span><% end %>
+    <% if scene.dealer == :me %><b class="c-dealer-inline"><%= tr(:dealer) %></b><% end %>
+  </div>
+</section>
+
+<p class="c-status<%= " c-status-mine" if my_play %>">
+  <% if scene.playing? %>
+    <% if scene.my_turn? %>
+      <strong><%= tr(:your_turn) %></strong><%= must_text %>
+    <% else %>
+      <span class="c-dots"><%= tr(:waiting_for, name: player_name(scene.to_act)) %></span>
+    <% end %>
+  <% end %>
+</p>
+
+<% cards = scene.hand_by_suit.values.flatten %>
+<%= form_tag prototype_screens_path, method: :get, class: "c-hand-form#{" c-my-play" if my_play}", enforce_utf8: false do %>
+  <%= hidden_field_tag :variant, @variant, id: nil %>
+  <%= hidden_field_tag :lang, @lang, id: nil %>
+  <%= hidden_field_tag :scenario, action_scenario(:play), id: nil %>
+
+  <div class="c-hand">
+    <% cards.each_with_index do |card, index| %>
+      <% if scene.playable?(card) %>
+        <label class="c-pick">
+          <input type="radio" name="card" value="<%= card %>" id="c-card-<%= index %>">
+          <%= render "prototype/screens/variant_c/card", card:, size: :lg, trump: card.suit == scene.trump %>
+        </label>
+      <% else %>
+        <span class="c-pick<%= " c-illegal" if my_play %>"<% if my_play %> title="<%= tr(:illegal) %>"<% end %>>
+          <%= render "prototype/screens/variant_c/card", card:, size: :lg, trump: card.suit == scene.trump %>
+          <% if my_play %><span class="c-lock" aria-label="<%= tr(:illegal) %>">🔒</span><% end %>
+        </span>
+      <% end %>
+    <% end %>
+  </div>
+
+  <% if my_play %>
+    <style>
+      <% cards.each_with_index do |card, index| %>
+        <% next unless scene.playable?(card) %>
+        .variant-c .c-hand-form:has(#c-card-<%= index %>:checked) .c-play-label[data-for="c-card-<%= index %>"] { display: inline; }
+      <% end %>
+    </style>
+    <button type="submit" class="c-btn c-btn-primary c-btn-block c-play">
+      <span class="c-play-hint"><%= tr(:play) %></span>
+      <% cards.each_with_index do |card, index| %>
+        <% if scene.playable?(card) %><span class="c-play-label" data-for="c-card-<%= index %>"><%= tr(:play_card, card: card_text(card)) %></span><% end %>
+      <% end %>
+    </button>
+  <% end %>
+<% end %>
+
+<% if scene.choosing_trump? %>
+  <%= render "prototype/screens/variant_c/sheet", scene: %>
+<% end %>

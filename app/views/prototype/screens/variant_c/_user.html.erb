@@ -1,0 +1,8 @@
+<% me = scene.username(:me) %>
+<details class="c-user">
+  <summary aria-label="<%= tr(:signed_in_as, name: me) %>"><%= me.first.upcase %></summary>
+  <div class="c-user-menu">
+    <p><%= tr(:signed_in_as, name: me) %></p>
+    <button type="button" class="c-btn c-btn-ghost c-btn-block"><%= tr(:sign_out) %></button>
+  </div>
+</details>

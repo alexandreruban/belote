@@ -21,6 +21,13 @@
       .prototype-switcher details { position: relative; }
       .prototype-switcher summary { cursor: pointer; list-style: none; opacity: .7; }
       .prototype-switcher details pre { position: absolute; bottom: 34px; right: 0; width: min(420px, 90vw); max-height: 60vh; overflow: auto; margin: 0; padding: 10px; background: #111; border-radius: 8px; font-size: 11px; white-space: pre-wrap; }
+      @media (max-width: 600px) {
+        .prototype-switcher { flex-wrap: nowrap; gap: 4px; padding: 4px 6px; font-size: 11px; }
+        .prototype-switcher > span:first-of-type { max-width: 2ch; overflow: hidden; white-space: nowrap; }
+        .prototype-switcher select { max-width: 130px; padding: 4px; }
+        .prototype-switcher details { display: none; }
+        .prototype-switcher .lang { display: flex; white-space: nowrap; }
+      }
     </style>
 
     <%= javascript_importmap_tags %>

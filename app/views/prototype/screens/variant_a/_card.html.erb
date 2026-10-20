@@ -1,0 +1,9 @@
+<%# PROTOTYPE: one face-up card. Locals: card, size (:lg, :md, :sm); optional classes, href, style, title. %>
+<%= content_tag (local_assigns[:href] ? :a : :span),
+      class: [ "a-card", "a-card--#{size}", ("is-red" if card.red?), local_assigns[:classes] ],
+      href: local_assigns[:href], style: local_assigns[:style], title: local_assigns[:title],
+      "aria-label": card_text(card) do %>
+  <span class="a-card__corner"><span><%= rank_text(card) %></span><span><%= card.symbol %></span></span>
+  <span class="a-card__pip"><%= card.symbol %></span>
+  <span class="a-card__corner a-card__corner--end"><span><%= rank_text(card) %></span><span><%= card.symbol %></span></span>
+<% end %>

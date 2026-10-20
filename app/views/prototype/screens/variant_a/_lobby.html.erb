@@ -1,0 +1,34 @@
+<%# PROTOTYPE: the Lobby as a round table whose four chairs fill in join order. Chairs are places, not Seats. %>
+<main class="a-lobby">
+  <h1 class="a-lobby__title"><%= tr(:lobby) %></h1>
+
+  <div class="a-round-table">
+    <% %i[ top right bottom left ].each_with_index do |place, index| %>
+      <% name = scene.waiting[index] %>
+      <% me = name == scene.username(:me) %>
+      <div class="a-chair a-chair--<%= place %> <%= "is-me" if me %>">
+        <% if name %>
+          <span class="a-avatar a-avatar--lg"><%= name.first.upcase %></span>
+          <span class="a-chair__name"><%= name %><% if me %> <small>(<%= tr(:you) %>)</small><% end %></span>
+        <% else %>
+          <span class="a-chair__empty">?</span>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="a-round-table__top">
+      <span class="a-label"><%= tr(:lobby_waiting) %></span>
+      <span class="a-count"><%= tr(:lobby_count, count: scene.waiting.size) %></span>
+      <p class="a-missing">
+        <%= scene.waiting.empty? ? tr(:lobby_nobody) : tr(:lobby_missing, count: scene.missing) %>
+      </p>
+      <% if scene.joined? %>
+        <%= link_to tr(:lobby_leave), action_path(:leave), class: "a-btn a-btn--lg" %>
+      <% else %>
+        <%= link_to tr(:lobby_join), action_path(:join), class: "a-btn a-btn--primary a-btn--lg" %>
+      <% end %>
+    </div>
+  </div>
+
+  <p class="a-lobby__rule"><%= tr(:lobby_rule) %></p>
+</main>

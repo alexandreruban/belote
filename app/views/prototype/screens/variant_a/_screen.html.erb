@@ -1,1 +1,19 @@
-<p style="padding:16px">Variant a: <%= scene.key %> (placeholder)</p>
+<%# PROTOTYPE (throwaway): variant A, "Felt table". A classic card table seen from above. %>
+<%= render "prototype/screens/variant_a/style" %>
+
+<div class="variant-a">
+  <header class="a-topbar">
+    <strong class="a-brand">Belote</strong>
+    <div class="a-user">
+      <span class="a-avatar"><%= scene.username(:me).first.upcase %></span>
+      <span><%= scene.username(:me) %></span>
+      <button type="button" class="a-btn a-btn--sm"><%= tr(:sign_out) %></button>
+    </div>
+  </header>
+
+  <% if scene.lobby? %>
+    <%= render "prototype/screens/variant_a/lobby", scene: scene %>
+  <% else %>
+    <%= render "prototype/screens/variant_a/table", scene: scene %>
+  <% end %>
+</div>

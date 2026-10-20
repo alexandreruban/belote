@@ -1,0 +1,25 @@
+<%# PROTOTYPE: one Player around the table. Locals: scene, position. %>
+<% announcement = scene.announcement if scene.announcement&.dig(:position) == position %>
+<% bubble = if announcement then tr(announcement[:call])
+            elsif scene.choosing_trump? && scene.spoken[position] == :pass then tr(:passed)
+            end %>
+<div class="a-seat a-seat--<%= position %> a-team-<%= scene.team(position) %> <%= "is-to-act" if scene.to_act == position %>">
+  <div class="a-plate">
+    <span class="a-dot"></span>
+    <span><%= scene.username(position) %></span>
+    <% if position == :me %><small>(<%= tr(:you) %>)</small><% end %>
+    <% if scene.dealer == position %><span class="a-chip" title="<%= tr(:dealer) %>"><%= tr(:dealer).first %></span><% end %>
+    <% if scene.taker == position %><span class="a-tag a-tag--taker"><%= tr(:taker) %></span><% end %>
+  </div>
+
+  <% if position != :me %>
+    <% count = scene.hand_counts.fetch(position, 0) %>
+    <div class="a-backs" title="<%= tr(:cards_left, count: count) %>">
+      <% count.times do %><span class="a-back"></span><% end %>
+    </div>
+  <% end %>
+
+  <% if bubble %>
+    <span class="a-bubble <%= "a-bubble--belote" if announcement %>"><%= bubble %></span>
+  <% end %>
+</div>

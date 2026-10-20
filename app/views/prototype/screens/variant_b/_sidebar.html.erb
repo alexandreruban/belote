@@ -1,0 +1,104 @@
+<% target = Prototype::Screens::Scene::TARGET %>
+<aside class="b-side">
+  <section class="b-panel b-scores">
+    <h2><%= tr(:score) %> <small><%= tr(:target, target:) %></small></h2>
+    <% { us: %i[ me partner ], them: %i[ left right ] }.each do |team, members| %>
+      <div class="b-team b-team-<%= team %>">
+        <div class="b-team-head">
+          <strong><%= tr(team) %></strong>
+          <span class="b-team-names"><%= members.map { player_name(it) }.join(" · ") %></span>
+          <span class="b-team-score"><%= scene.scores[team] %></span>
+        </div>
+        <div class="b-bar"><span style="width: <%= [ scene.scores[team] * 100 / target, 100 ].min %>%"></span></div>
+      </div>
+    <% end %>
+  </section>
+
+  <section class="b-panel">
+    <h2><%= tr(:deal, number: scene.deal_number) %><% if scene.playing? %> · <%= tr(:trick, number: scene.trick_number) %><% end %></h2>
+    <dl class="b-facts">
+      <dt><%= tr(:trump) %></dt>
+      <dd>
+        <% if scene.trump %>
+          <span class="<%= "b-red" if scene.trump.in?(%i[ hearts diamonds ]) %>"><%= suit_symbol(scene.trump) %></span>
+          <%= suit_name(scene.trump) %> · <%= tr(:taken_by, name: scene.username(scene.taker)) %>
+        <% else %>
+          —
+        <% end %>
+      </dd>
+      <dt><%= tr(:dealer) %></dt>
+      <dd><%= scene.username(scene.dealer) %></dd>
+      <% if scene.tricks_won %>
+        <dt><%= tr(:tricks_won) %></dt>
+        <dd>
+          <span class="b-team-us"><%= tr(:us) %> <%= scene.tricks_won[:us] %></span> ·
+          <span class="b-team-them"><%= tr(:them) %> <%= scene.tricks_won[:them] %></span>
+        </dd>
+      <% end %>
+    </dl>
+  </section>
+
+  <section class="b-panel">
+    <h2><%= tr(:b_players) %></h2>
+    <p class="b-caption"><%= tr(:b_play_order) %></p>
+    <ol class="b-players">
+      <% Prototype::Screens::Scene::POSITIONS.each do |position| %>
+        <% team = scene.team(position) %>
+        <li class="b-team-<%= team %> <%= "b-acting" if position == scene.to_act %>">
+          <span class="b-player-name">
+            <%= scene.username(position) %>
+            <% if position == :me %><span class="b-tag"><%= tr(:you) %></span><% end %>
+          </span>
+          <span class="b-player-role">
+            <%= tr(team) %><% unless position == :me %> · <%= tr(team == :us ? :b_partner : :b_opponent) %><% end %>
+          </span>
+          <span class="b-player-chips">
+            <% if position == scene.dealer %><span class="b-tag"><%= tr(:dealer) %></span><% end %>
+            <% if position == scene.taker %><span class="b-tag b-tag-trump"><%= tr(:taker) %></span><% end %>
+            <span class="b-player-cards"><%= tr(:cards_left, count: scene.hand_counts[position]) %></span>
+          </span>
+        </li>
+      <% end %>
+    </ol>
+  </section>
+
+  <section class="b-panel">
+    <h2><%= tr(:b_score_sheet) %></h2>
+    <table class="b-sheet">
+      <thead>
+        <tr><th><%= tr(:b_deal_column) %></th><th><%= tr(:taker) %></th><th><%= tr(:us) %></th><th><%= tr(:them) %></th></tr>
+      </thead>
+      <tbody>
+        <% scene.history.each do |deal| %>
+          <tr class="<%= "b-newest" if deal == scene.previous_deal %> <%= "b-dropped" if deal[:result] == :dropped %>">
+            <td><%= deal[:number] %></td>
+            <td>
+              <% if deal[:result] == :dropped %>
+                <%= tr(:dropped) %>
+              <% else %>
+                <span class="b-team-<%= scene.team(deal[:taker]) %>"><%= scene.username(deal[:taker]) %></span>
+                <span class="<%= "b-red" if deal[:trump].in?(%i[ hearts diamonds ]) %>"><%= suit_symbol(deal[:trump]) %></span>
+                <span class="b-tag b-tag-<%= deal[:result] %>"><%= tr(deal[:result]) %></span>
+              <% end %>
+            </td>
+            <td><%= deal[:us] %></td>
+            <td><%= deal[:them] %></td>
+          </tr>
+        <% end %>
+        <tr class="b-current">
+          <td><%= scene.deal_number %></td>
+          <td colspan="3">
+            <%= tr(:in_progress) %>
+            <% if scene.taker %>
+              · <span class="b-team-<%= scene.team(scene.taker) %>"><%= scene.username(scene.taker) %></span>
+              <span class="<%= "b-red" if scene.trump.in?(%i[ hearts diamonds ]) %>"><%= suit_symbol(scene.trump) %></span>
+            <% end %>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr><th colspan="2"><%= tr(:total) %></th><th><%= scene.scores[:us] %></th><th><%= scene.scores[:them] %></th></tr>
+      </tfoot>
+    </table>
+  </section>
+</aside>

@@ -1,0 +1,4 @@
+<%# locals: card, size (:hand, :trick or :small) %>
+<span class="b-card b-card-<%= size %> <%= "b-red" if card.red? %>">
+  <span class="b-rank"><%= rank_text(card) %></span><span class="b-suit"><%= card.symbol %></span>
+</span>

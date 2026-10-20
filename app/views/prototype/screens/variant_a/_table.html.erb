@@ -1,0 +1,115 @@
+<%# PROTOTYPE: the Game table. Partner at the top, opponents left and right, the viewer at the bottom. %>
+<% last_trick = scene.last_trick %>
+<main class="a-table">
+  <aside class="a-corner">
+    <div class="a-scoreboard">
+      <div class="a-score a-team-us"><span class="a-dot"></span><span><%= tr(:us) %></span><strong><%= scene.scores[:us] %></strong></div>
+      <div class="a-score a-team-them"><span class="a-dot"></span><span><%= tr(:them) %></span><strong><%= scene.scores[:them] %></strong></div>
+      <div class="a-meta"><%= tr(:target, target: Prototype::Screens::Scene::TARGET) %></div>
+      <div class="a-meta">
+        <%= tr(:deal, number: scene.deal_number) %><% if scene.trick_number %> · <%= tr(:trick, number: scene.trick_number) %><% end %>
+      </div>
+      <% if scene.tricks_won %>
+        <div class="a-meta">
+          <%= tr(:tricks_won) %>
+          <span class="a-team-us a-team-ink"><%= scene.tricks_won[:us] %></span> –
+          <span class="a-team-them a-team-ink"><%= scene.tricks_won[:them] %></span>
+        </div>
+      <% end %>
+      <% if scene.trump %>
+        <div class="a-trump <%= "is-red" if scene.trump.in?(%i[ hearts diamonds ]) %>">
+          <span class="a-meta"><%= tr(:trump) %></span>
+          <span class="a-trump__suit" title="<%= suit_name(scene.trump) %>"><%= suit_symbol(scene.trump) %></span>
+          <span class="a-meta"><%= tr(:taken_by, name: scene.username(scene.taker)) %></span>
+        </div>
+      <% end %>
+    </div>
+
+    <% if last_trick %>
+      <details class="a-last">
+        <summary class="a-btn a-btn--sm"><%= tr(:last_trick) %></summary>
+        <div class="a-last__pop">
+          <%= render "prototype/screens/variant_a/cross", cards: last_trick[:cards], winner: last_trick[:winner], size: :sm %>
+          <p class="a-label"><%= tr(:won_by, name: player_name(last_trick[:winner])) %></p>
+        </div>
+      </details>
+    <% else %>
+      <span class="a-btn a-btn--sm is-disabled" title="<%= tr(:no_last_trick) %>"><%= tr(:last_trick) %></span>
+    <% end %>
+  </aside>
+
+  <% %i[ partner left right ].each do |position| %>
+    <%= render "prototype/screens/variant_a/seat", scene: scene, position: position %>
+  <% end %>
+
+  <section class="a-board">
+    <% if (deal = scene.previous_deal) %>
+      <div class="a-toast">
+        <strong><%= tr(:deal, number: deal[:number]) %></strong>
+        · <%= deal[:result] == :dropped ? tr(:dropped) : tr(:deal_result, name: scene.username(deal[:taker]), suit: suit_name(deal[:trump])) %>
+        <% unless deal[:result] == :dropped %>· <strong><%= tr(deal[:result]) %></strong><% end %>
+        · <span class="a-team-us a-team-ink"><%= tr(:us) %> +<%= deal[:us] %></span>,
+        <span class="a-team-them a-team-ink"><%= tr(:them) %> +<%= deal[:them] %></span>
+      </div>
+    <% end %>
+
+    <% if scene.choosing_trump? %>
+      <div class="a-turned">
+        <span class="a-label"><%= tr(:turned_card) %></span>
+        <div class="a-turned__stack">
+          <span class="a-back a-back--deck"></span>
+          <%= render "prototype/screens/variant_a/card", card: scene.turned_card, size: :md, classes: "a-turned__card" %>
+        </div>
+        <span class="a-label"><%= tr(:"round_#{scene.trump_round}") %></span>
+      </div>
+    <% elsif scene.trick.any? %>
+      <%= render "prototype/screens/variant_a/cross", cards: scene.trick, winner: scene.winning, size: :md,
+            placeholders: true, to_act: scene.to_act, winner_tag: tr(:winning) %>
+    <% elsif last_trick %>
+      <%# The Trick just won stays on the felt, dimmed, until the next card is played. %>
+      <%= render "prototype/screens/variant_a/cross", cards: last_trick[:cards], winner: last_trick[:winner], size: :md, dim: true,
+            center_label: tr(:won_by, name: player_name(last_trick[:winner])) %>
+    <% end %>
+
+    <% if scene.to_act && !scene.my_turn? %>
+      <p class="a-status"><%= tr(:waiting_for, name: scene.username(scene.to_act)) %></p>
+    <% end %>
+  </section>
+
+  <section class="a-me">
+    <div class="a-me__bar">
+      <%= render "prototype/screens/variant_a/seat", scene: scene, position: :me %>
+
+      <% if scene.my_turn? && scene.choosing_trump? %>
+        <div class="a-speak">
+          <span class="a-speak__title"><%= tr(:your_turn_speak) %> · <%= tr(:"round_#{scene.trump_round}") %></span>
+          <div class="a-speak__buttons">
+            <% scene.trump_choices.each do |suit| %>
+              <%= link_to action_path(:take), class: "a-btn a-btn--primary" do %>
+                <span class="a-suit <%= "is-red" if suit.in?(%i[ hearts diamonds ]) %>"><%= suit_symbol(suit) %></span>
+                <%= tr(:take_suit, suit: suit_name(suit)) %>
+              <% end %>
+            <% end %>
+            <%= link_to tr(:pass), action_path(:pass), class: "a-btn" %>
+          </div>
+        </div>
+      <% elsif scene.my_turn? && scene.playing? %>
+        <p class="a-hint"><strong><%= tr(:your_turn) %></strong> · <%= must_text %></p>
+      <% end %>
+    </div>
+
+    <% cards = scene.hand_by_suit.values.flatten %>
+    <div class="a-hand">
+      <% cards.each_with_index do |card, index| %>
+        <% offset = index - (cards.size - 1) / 2.0 %>
+        <% playable = scene.playable?(card) %>
+        <% illegal = !playable && scene.playing? && scene.my_turn? %>
+        <%= render "prototype/screens/variant_a/card", card: card, size: :lg,
+              classes: ("is-legal" if playable) || ("is-illegal" if illegal),
+              href: (action_path(:play) if playable),
+              title: (tr(:play_card, card: card_text(card)) if playable) || (tr(:illegal) if illegal),
+              style: "--offset: #{offset}; --arc: #{offset.abs}" %>
+      <% end %>
+    </div>
+  </section>
+</main>

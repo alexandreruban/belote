@@ -1,0 +1,9 @@
+<div class="c-seat c-seat-<%= position %> c-<%= scene.team(position) %><%= " c-to-act" if scene.to_act == position %>">
+  <div class="c-avatar">
+    <%= scene.username(position).first.upcase %>
+    <% if scene.dealer == position %><b class="c-dealer" title="<%= tr(:dealer) %>"><%= tr(:dealer).first %></b><% end %>
+    <% if (count = scene.hand_counts[position]) %><b class="c-count" title="<%= tr(:cards_left, count:) %>"><i></i><%= count %></b><% end %>
+  </div>
+  <span class="c-name"><%= scene.username(position) %></span>
+  <%= render "prototype/screens/variant_c/slot", scene:, position:, last:, size: :sm %>
+</div>

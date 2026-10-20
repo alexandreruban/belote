@@ -1,0 +1,31 @@
+<main class="b-lobby">
+  <section class="b-panel">
+    <h1><%= tr(:lobby) %></h1>
+
+    <div class="b-lobby-head">
+      <h2><%= tr(:b_waiting_list) %></h2>
+      <span class="b-count"><%= tr(:lobby_count, count: scene.waiting.size) %></span>
+    </div>
+
+    <ol class="b-waiting">
+      <% scene.waiting.each do |name| %>
+        <li class="<%= "b-me" if name == scene.username(:me) %>">
+          <%= name %>
+          <% if name == scene.username(:me) %><span class="b-tag"><%= tr(:you) %></span><% end %>
+        </li>
+      <% end %>
+      <% scene.missing.times do %>
+        <li class="b-empty">—</li>
+      <% end %>
+    </ol>
+
+    <p class="b-missing"><%= tr(:lobby_missing, count: scene.missing) %></p>
+    <p class="b-rule"><%= tr(:lobby_rule) %></p>
+
+    <% if scene.joined? %>
+      <%= link_to tr(:lobby_leave), action_path(:leave), class: "b-btn b-btn-secondary" %>
+    <% else %>
+      <%= link_to tr(:lobby_join), action_path(:join), class: "b-btn b-btn-primary" %>
+    <% end %>
+  </section>
+</main>

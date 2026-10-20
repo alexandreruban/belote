@@ -26,9 +26,4 @@ module Prototype::ScreensHelper
     else tr(:any_card)
     end
   end
-
-  def deal_result_text(deal)
-    return tr(:dropped) if deal[:result] == :dropped
-    "#{tr(:deal_result, name: player_name(deal[:taker]), suit: suit_name(deal[:trump]))} · #{tr(deal[:result])}"
-  end
 end

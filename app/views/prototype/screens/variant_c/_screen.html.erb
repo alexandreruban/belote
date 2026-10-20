@@ -1,1 +1,13 @@
-<p style="padding:16px">Variant c: <%= scene.key %> (placeholder)</p>
+<%# PROTOTYPE variant C, "Pocket": phone-first, one column, dark. The other three Players sit in an arc, each with their card of the Trick under them; you play in two steps (tap, then Play); Trump is chosen in a bottom sheet. %>
+<%= render "prototype/screens/variant_c/style" %>
+
+<% sheet = !scene.lobby? && scene.choosing_trump? %>
+<div class="variant-c">
+  <div class="c-phone<%= " c-with-sheet" if sheet %><%= " c-with-sheet-mine" if sheet && scene.my_turn? %>">
+    <% if scene.lobby? %>
+      <%= render "prototype/screens/variant_c/lobby", scene: %>
+    <% else %>
+      <%= render "prototype/screens/variant_c/table", scene: %>
+    <% end %>
+  </div>
+</div>

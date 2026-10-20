@@ -1,1 +1,18 @@
-<p style="padding:16px">Variant b: <%= scene.key %> (placeholder)</p>
+<%# PROTOTYPE variant B, "Board": no table metaphor; words, rows and a score sheet. %>
+<%= render "prototype/screens/variant_b/style" %>
+
+<div class="variant-b">
+  <header class="b-nav">
+    <span class="b-brand">Belote</span>
+    <span class="b-user">
+      <span><%= tr(:signed_in_as, name: scene.username(:me)) %></span>
+      <button type="button" class="b-btn b-btn-quiet"><%= tr(:sign_out) %></button>
+    </span>
+  </header>
+
+  <% if scene.lobby? %>
+    <%= render "prototype/screens/variant_b/lobby", scene: %>
+  <% else %>
+    <%= render "prototype/screens/variant_b/table", scene: %>
+  <% end %>
+</div>

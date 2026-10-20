@@ -1,0 +1,163 @@
+<style>
+  .variant-c {
+    --bg: #0b0f14; --panel: #131a23; --panel-2: #1c2632; --line: #2a3747;
+    --ink: #e6edf3; --muted: #8b98a9; --us: #2dd4bf; --them: #fb7185; --gold: #fbbf24;
+    --face: #f7f3ea; --red: #c62828; --black: #1f2328;
+    --reserve: 64px; min-height: 100vh; background: var(--bg); color: var(--ink);
+  }
+  .variant-c .c-phone { position: relative; max-width: 420px; min-height: 100vh; margin: 0 auto; padding: 10px 14px calc(var(--reserve) + 12px); display: flex; flex-direction: column; gap: 12px; background: var(--panel); }
+  .variant-c .c-phone.c-with-sheet { padding-bottom: calc(var(--reserve) + 200px); }
+  .variant-c .c-phone.c-with-sheet-mine { padding-bottom: calc(var(--reserve) + 300px); }
+  @media (min-width: 480px) { .variant-c .c-phone { border-inline: 1px solid var(--line); } }
+  /* The prototype switcher wraps to three rows on narrow screens */
+  @media (max-width: 600px) { .variant-c { --reserve: 118px; } }
+  .variant-c .c-us { --team: var(--us); }
+  .variant-c .c-them { --team: var(--them); }
+
+  /* Buttons */
+  .variant-c .c-btn { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; padding: 0 16px; border-radius: 14px; border: 0; font-weight: 650; font-size: 16px; text-decoration: none; cursor: pointer; }
+  .variant-c .c-btn-primary { background: var(--gold); color: #1a1300; }
+  .variant-c .c-btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .variant-c .c-btn-block { width: 100%; }
+  .variant-c .c-btn b { font-size: 20px; }
+
+  /* Header: Scores, Trump, the signed-in User */
+  .variant-c .c-header { display: flex; align-items: center; gap: 10px; min-height: 40px; }
+  .variant-c .c-brand { flex: 1; font-weight: 750; font-size: 17px; letter-spacing: .02em; }
+  .variant-c .c-scores { flex: 1; display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; }
+  .variant-c .c-score { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; font-size: 13px; color: var(--team); }
+  .variant-c .c-score strong { font-size: 19px; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .variant-c .c-bar { flex-basis: 100%; height: 3px; margin-top: 3px; border-radius: 3px; background: var(--line); overflow: hidden; }
+  .variant-c .c-bar span { display: block; height: 100%; background: var(--team); }
+  .variant-c .c-target { grid-column: 1 / -1; margin-top: 3px; font-size: 10px; color: var(--muted); }
+  .variant-c .c-trump-chip { display: flex; flex-direction: column; align-items: center; padding: 4px 9px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--line); font-size: 11px; line-height: 1.15; white-space: nowrap; }
+  .variant-c .c-trump-chip b { font-size: 17px; }
+  .variant-c .c-trump-chip.c-red b { color: #ff6b6b; }
+  .variant-c .c-trump-chip small { color: var(--muted); font-size: 10px; }
+  .variant-c .c-user { position: relative; }
+  .variant-c .c-user summary { list-style: none; cursor: pointer; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--panel-2); border: 2px solid var(--us); font-weight: 700; }
+  .variant-c .c-user summary::-webkit-details-marker { display: none; }
+  .variant-c .c-user-menu { position: absolute; right: 0; top: 42px; z-index: 40; width: 200px; padding: 10px; border-radius: 12px; background: var(--panel-2); border: 1px solid var(--line); box-shadow: 0 10px 30px rgb(0 0 0 / .5); }
+  .variant-c .c-user-menu p { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+  .variant-c .c-user-menu .c-btn { min-height: 40px; font-size: 14px; }
+
+  /* Cards */
+  .variant-c .c-card { --w: 56px; position: relative; display: inline-flex; flex-direction: column; justify-content: space-between; width: var(--w); height: calc(var(--w) * 1.4); padding: calc(var(--w) * .08); border-radius: calc(var(--w) * .14); background: var(--face); color: var(--black); box-shadow: 0 2px 8px rgb(0 0 0 / .45); font-weight: 750; line-height: 1; user-select: none; }
+  .variant-c .c-card.c-sm { --w: 44px; }
+  .variant-c .c-card.c-lg { --w: clamp(52px, 15vw, 66px); }
+  .variant-c .c-card.c-xl { --w: 84px; }
+  .variant-c .c-card.c-red { color: var(--red); }
+  .variant-c .c-card .c-rank { display: flex; flex-direction: column; align-items: center; width: max-content; font-size: calc(var(--w) * .3); }
+  .variant-c .c-card .c-rank small { font-size: .78em; }
+  .variant-c .c-card .c-pip { align-self: flex-end; font-size: calc(var(--w) * .56); line-height: .8; }
+  .variant-c .c-card.c-trump-card::before { content: ""; position: absolute; inset: 0 0 auto; height: 4px; border-radius: calc(var(--w) * .14) calc(var(--w) * .14) 0 0; background: var(--gold); }
+  .variant-c .c-card.c-winning { box-shadow: 0 0 0 3px var(--gold), 0 2px 8px rgb(0 0 0 / .45); }
+  .variant-c .c-card .c-tag { position: absolute; bottom: -9px; left: 50%; transform: translateX(-50%); padding: 1px 5px; border-radius: 6px; background: var(--gold); color: #1a1300; font-size: 9px; font-weight: 750; text-transform: uppercase; letter-spacing: .03em; white-space: nowrap; }
+  .variant-c .c-card.c-ghost { opacity: .55; }
+  .variant-c .c-empty-slot { display: block; width: 44px; height: 62px; border-radius: 7px; border: 1.5px dashed var(--line); }
+  .variant-c .c-empty-slot.c-md { width: 56px; height: 78px; }
+
+  /* The other three Players, in an arc */
+  .variant-c .c-arc { display: grid; grid-template-columns: repeat(3, 1fr); align-items: start; padding-top: 6px; }
+  .variant-c .c-seat { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .variant-c .c-seat-left, .variant-c .c-seat-right { margin-top: 40px; }
+  .variant-c .c-avatar { position: relative; width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 20px; background: var(--panel-2); border: 3px solid var(--team); }
+  .variant-c .c-to-act .c-avatar { animation: c-pulse 1.6s ease-in-out infinite; box-shadow: 0 0 0 3px var(--panel), 0 0 0 6px var(--gold); }
+  @keyframes c-pulse { 50% { box-shadow: 0 0 0 3px var(--panel), 0 0 0 10px rgb(251 191 36 / .3); } }
+  .variant-c .c-dealer { position: absolute; top: -5px; left: -7px; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--bg); font-size: 11px; }
+  .variant-c .c-count { position: absolute; bottom: -5px; right: -10px; display: flex; align-items: center; gap: 3px; padding: 1px 5px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); font-size: 11px; color: var(--muted); }
+  .variant-c .c-count i { width: 7px; height: 10px; border-radius: 2px; background: linear-gradient(135deg, #3b4b63, #26344a); border: 1px solid #5a6b85; }
+  .variant-c .c-name { font-size: 12px; color: var(--muted); }
+  .variant-c .c-seat.c-to-act .c-name { color: var(--gold); font-weight: 650; }
+  .variant-c .c-slot { min-height: 72px; display: flex; flex-direction: column; align-items: center; padding-top: 4px; }
+  .variant-c .c-slot-last { display: none; }
+  .variant-c:has(#c-last:checked) .c-slot-current { display: none; }
+  .variant-c:has(#c-last:checked) .c-slot-last { display: flex; }
+  .variant-c .c-played { position: relative; }
+  .variant-c .c-said { margin-top: 10px; padding: 4px 10px; border-radius: 12px; background: var(--panel-2); color: var(--muted); font-size: 12px; }
+  .variant-c .c-bubble { position: absolute; top: -14px; left: 70%; z-index: 2; white-space: nowrap; padding: 3px 9px; border-radius: 12px 12px 12px 2px; background: var(--gold); color: #1a1300; font-size: 12px; font-weight: 750; animation: c-pop .45s ease-out; }
+  @keyframes c-pop { from { transform: scale(.4); opacity: 0; } }
+
+  /* Your card of the Trick, the last-Trick chip */
+  .variant-c .c-middle { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
+  .variant-c .c-last { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+  .variant-c .c-last-chip { position: relative; display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel-2); font-size: 12px; cursor: pointer; white-space: nowrap; }
+  .variant-c .c-last-chip input { position: absolute; opacity: 0; pointer-events: none; }
+  .variant-c:has(#c-last:checked) .c-last-chip { background: var(--ink); color: var(--bg); }
+  .variant-c .c-last-chip.c-disabled { opacity: .35; cursor: not-allowed; }
+  .variant-c .c-last-caption { display: none; font-size: 11px; color: var(--muted); }
+  .variant-c:has(#c-last:checked) .c-last-caption { display: block; }
+  .variant-c .c-mine .c-slot { min-height: 84px; }
+  .variant-c .c-with-sheet .c-slot, .variant-c .c-with-sheet .c-mine .c-slot { min-height: 36px; }
+  .variant-c .c-with-sheet .c-hand { padding-top: 6px; }
+  .variant-c .c-trick-info { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-size: 11px; color: var(--muted); }
+  .variant-c .c-dealer-inline { padding: 1px 6px; border-radius: 8px; background: var(--ink); color: var(--bg); font-size: 10px; }
+
+  /* Whose turn, what you must play */
+  .variant-c .c-status { margin: 0; min-height: 20px; text-align: center; font-size: 14px; color: var(--muted); }
+  .variant-c .c-status strong { display: block; color: var(--gold); font-size: 15px; }
+  .variant-c .c-dots::after { content: ""; display: inline-block; width: 6px; height: 6px; margin-left: 6px; border-radius: 50%; background: var(--gold); vertical-align: middle; animation: c-blink 1.2s infinite; }
+  @keyframes c-blink { 50% { opacity: .15; } }
+
+  /* Your hand: tap a card, then Play */
+  .variant-c .c-hand-form { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
+  .variant-c .c-hand { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding-top: 18px; }
+  .variant-c .c-my-play .c-hand { border-radius: 16px; box-shadow: inset 0 0 0 1px rgb(251 191 36 / .25); padding: 18px 6px 10px; }
+  .variant-c .c-pick { position: relative; display: block; transition: transform .15s; }
+  .variant-c .c-pick input { position: absolute; opacity: 0; pointer-events: none; }
+  .variant-c label.c-pick { cursor: pointer; }
+  .variant-c label.c-pick .c-card { box-shadow: 0 0 0 2px rgb(251 191 36 / .6), 0 2px 8px rgb(0 0 0 / .45); }
+  .variant-c label.c-pick:has(input:checked) { transform: translateY(-16px); }
+  .variant-c label.c-pick:has(input:checked) .c-card { box-shadow: 0 0 0 3px var(--gold), 0 12px 22px rgb(0 0 0 / .55); }
+  .variant-c .c-illegal .c-card { filter: grayscale(.7) brightness(.5); }
+  .variant-c .c-lock { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -30%); font-size: 15px; filter: grayscale(1); opacity: .9; }
+  .variant-c .c-play { position: sticky; bottom: calc(var(--reserve) + 6px); }
+  .variant-c .c-hand-form:not(:has(input:checked)) .c-play { background: var(--panel-2); color: var(--muted); pointer-events: none; }
+  .variant-c .c-play-label { display: none; }
+  .variant-c .c-hand-form:has(input:checked) .c-play-hint { display: none; }
+
+  /* The previous Deal's result */
+  .variant-c .c-deal-card { position: relative; padding: 10px 40px 10px 12px; border-radius: 14px; background: linear-gradient(135deg, #1f2c3b, #18212c); border: 1px solid var(--line); font-size: 13px; animation: c-drop .4s ease-out; }
+  @keyframes c-drop { from { transform: translateY(-12px); opacity: 0; } }
+  .variant-c .c-deltas { display: flex; gap: 14px; margin-top: 4px; font-size: 16px; font-weight: 750; font-variant-numeric: tabular-nums; }
+  .variant-c .c-us-text { color: var(--us); }
+  .variant-c .c-them-text { color: var(--them); }
+  .variant-c .c-close { position: absolute; top: 6px; right: 8px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; cursor: pointer; color: var(--muted); font-size: 18px; }
+  .variant-c:has(#c-deal-dismiss:checked) .c-deal-card { display: none; }
+
+  /* Choosing Trump: the bottom sheet */
+  .variant-c .c-sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; max-width: 420px; margin: 0 auto; padding: 8px 16px calc(var(--reserve) + 12px); border-radius: 22px 22px 0 0; background: #1d2834; border-top: 1px solid #33435a; box-shadow: 0 -14px 40px rgb(0 0 0 / .55); animation: c-slide .35s ease-out; }
+  @keyframes c-slide { from { transform: translateY(100%); } }
+  .variant-c .c-grab { display: block; width: 40px; height: 4px; margin: 0 auto 10px; border-radius: 4px; background: #3a4a5f; }
+  .variant-c .c-sheet-head { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 12px; color: var(--muted); }
+  .variant-c .c-round { color: var(--gold); font-weight: 750; text-transform: uppercase; letter-spacing: .08em; }
+  .variant-c .c-sheet-body { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+  .variant-c .c-turned { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .variant-c .c-turned figcaption { font-size: 11px; color: var(--muted); }
+  .variant-c .c-sheet-side { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .variant-c .c-sheet-side h2 { margin: 0; font-size: 19px; }
+  .variant-c .c-passes { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+  .variant-c .c-passes li { padding: 3px 9px; border-radius: 10px; background: var(--panel); color: var(--muted); font-size: 12px; }
+  .variant-c .c-choices { display: grid; gap: 8px; }
+  .variant-c .c-choices-2 { grid-template-columns: 1fr 1fr; }
+  .variant-c .c-choices-2 .c-btn { font-size: 15px; padding: 0 10px; }
+  .variant-c .c-red-suit b { color: var(--red); }
+
+  /* Lobby */
+  .variant-c .c-lobby { display: flex; flex-direction: column; align-items: center; gap: 12px; padding-top: 28px; text-align: center; }
+  .variant-c .c-lobby h1 { margin: 0; font-size: 15px; font-weight: 650; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; }
+  .variant-c .c-counter { font-size: 76px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+  .variant-c .c-joined .c-counter { color: var(--gold); animation: c-blink 2.4s ease-in-out infinite; }
+  .variant-c .c-label { margin: 6px 0 0; font-size: 13px; color: var(--muted); }
+  .variant-c .c-lobby-seats { display: grid; grid-template-columns: repeat(4, 64px); gap: 14px; margin: 0; padding: 0; list-style: none; }
+  .variant-c .c-lobby-seats li { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .variant-c .c-lobby-seats .c-avatar { width: 56px; height: 56px; border-color: var(--line); }
+  .variant-c .c-lobby-seats .c-filled .c-avatar { border-color: var(--ink); }
+  .variant-c .c-lobby-seats .c-me .c-avatar { border-color: var(--gold); color: var(--gold); }
+  .variant-c .c-lobby-seats .c-open .c-avatar { background: transparent; border-style: dashed; }
+  .variant-c .c-joined .c-lobby-seats .c-open .c-avatar { animation: c-blink 1.6s ease-in-out infinite; }
+  .variant-c .c-lobby-seats .c-name { min-height: 16px; }
+  .variant-c .c-missing { margin: 8px 0 0; font-size: 16px; font-weight: 600; }
+  .variant-c .c-rule { max-width: 300px; margin: 0; font-size: 13px; color: var(--muted); }
+  .variant-c .c-sticky { position: sticky; bottom: calc(var(--reserve) + 6px); margin-top: auto; }
+</style>

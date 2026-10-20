@@ -1,0 +1,8 @@
+<%# A card face. Locals: card, size (:sm, :md, :lg, :xl), winning, ghost, trump. %>
+<% classes = [ "c-card", "c-#{local_assigns.fetch(:size, :md)}", ("c-red" if card.red?), ("c-winning" if local_assigns[:winning]),
+               ("c-ghost" if local_assigns[:ghost]), ("c-trump-card" if local_assigns[:trump]) ] %>
+<span class="<%= classes.compact.join(" ") %>" role="img" aria-label="<%= card_text(card) %>">
+  <span class="c-rank"><%= rank_text(card) %><small><%= card.symbol %></small></span>
+  <span class="c-pip"><%= card.symbol %></span>
+  <% if local_assigns[:winning] %><span class="c-tag"><%= tr(:winning) %></span><% end %>
+</span>

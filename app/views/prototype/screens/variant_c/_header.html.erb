@@ -1,0 +1,22 @@
+<% target = Prototype::Screens::Scene::TARGET %>
+<header class="c-header">
+  <div class="c-scores">
+    <% %i[ us them ].each do |team| %>
+      <div class="c-score c-<%= team %>">
+        <span><%= tr(team) %></span>
+        <strong><%= scene.scores[team] %></strong>
+        <span class="c-bar"><span style="width: <%= [ scene.scores[team] * 100 / target, 100 ].min %>%"></span></span>
+      </div>
+    <% end %>
+    <span class="c-target"><%= tr(:target, target:) %></span>
+  </div>
+
+  <% if scene.trump %>
+    <div class="c-trump-chip<%= " c-red" if scene.trump.in?(%i[ hearts diamonds ]) %>">
+      <span><b><%= suit_symbol(scene.trump) %></b> <%= tr(:trump) %></span>
+      <small><%= tr(:taken_by, name: scene.username(scene.taker)) %></small>
+    </div>
+  <% end %>
+
+  <%= render "prototype/screens/variant_c/user", scene: %>
+</header>

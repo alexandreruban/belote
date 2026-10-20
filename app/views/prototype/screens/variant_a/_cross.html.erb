@@ -1,0 +1,20 @@
+<%# PROTOTYPE: a Trick laid out as a cross, each card in front of the Player who played it. %>
+<%# Locals: cards ([position, card] in play order), winner, size; optional dim, placeholders, to_act, winner_tag, center_label. %>
+<% played = cards.to_h %>
+<div class="a-cross a-cross--<%= size %> <%= "is-dim" if local_assigns[:dim] %>">
+  <% if local_assigns[:center_label] %>
+    <span class="a-cross__mid a-label"><%= center_label %></span>
+  <% end %>
+  <% %i[ partner left right me ].each do |position| %>
+    <div class="a-cross__slot a-cross__slot--<%= position %>">
+      <% if (card = played[position]) %>
+        <%= render "prototype/screens/variant_a/card", card: card, size: size, classes: ("is-winning" if position == winner) %>
+        <% if position == winner && local_assigns[:winner_tag] %>
+          <span class="a-tag"><%= winner_tag %></span>
+        <% end %>
+      <% elsif local_assigns[:placeholders] %>
+        <span class="a-card-slot a-card--<%= size %> <%= "is-to-act" if position == local_assigns[:to_act] %>"></span>
+      <% end %>
+    </div>
+  <% end %>
+</div>
