@@ -1,0 +1,29 @@
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: #14261b;
+  color: #f4f0e3;
+  border-bottom: 1px solid rgb(255 255 255 / .08);
+}
+
+.top-bar__brand {
+  font: 400 21px/1 Georgia, "Times New Roman", serif;
+  letter-spacing: .04em;
+}
+
+.top-bar__user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 14px;
+}
+
+@media (max-width: 700px) {
+  .top-bar {
+    padding: 6px 10px;
+  }
+}

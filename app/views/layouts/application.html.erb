@@ -24,6 +24,10 @@
   </head>
 
   <body>
-    <%= yield %>
+    <%= render "layouts/top_bar", user: Current.user if authenticated? %>
+
+    <main class="page">
+      <%= yield %>
+    </main>
   </body>
 </html>
