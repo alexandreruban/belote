@@ -1,0 +1,9 @@
+<header class="top-bar">
+  <strong class="top-bar__brand">Belote</strong>
+
+  <div class="top-bar__user">
+    <span class="avatar" aria-hidden="true"><%= user.username.first.upcase %></span>
+    <span><%= user.username %></span>
+    <%= button_to "Se déconnecter", session_path, method: :delete, class: "button button--small" %>
+  </div>
+</header>
