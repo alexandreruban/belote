@@ -40,6 +40,10 @@ _Avoid_: Hand, round, donne, manche
 The four cards played in turn, one by each Player, and won by one of them.
 _Avoid_: Pli, round
 
+**Move**:
+One action a Player takes on their turn: passing or taking in a Trump round, or playing a card.
+_Avoid_: Action, turn
+
 ## Choosing Trump
 
 **Dealer**:
