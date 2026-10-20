@@ -29,8 +29,12 @@ _Avoid_: Queue, waiting room, table
 ## Play
 
 **Game**:
-The whole match, from four Players being seated until one Team wins.
+The whole match, from four Players being seated until one Team wins or it is abandoned.
 _Avoid_: Match, partie, table
+
+**Abandoned**:
+A Game ended before any Team won, because one of its Players left it.
+_Avoid_: Forfeit, cancelled
 
 **Deal**:
 One cycle of shuffling, dealing, choosing trump, playing eight Tricks and scoring.
