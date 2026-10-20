@@ -5,7 +5,7 @@ An online version of classic belote ("à la retourne") for four people playing l
 ## People
 
 **User**:
-A registered person, identified by a unique username and an email, who signs in with a password.
+A registered person, known to other Users by a unique username, who signs in with their email and password.
 _Avoid_: Account, member
 
 **Player**:
